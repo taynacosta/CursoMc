@@ -1,5 +1,6 @@
 package com.costatayna.mc.services;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.costatayna.mc.domain.Cidade;
 import com.costatayna.mc.domain.Cliente;
@@ -38,6 +40,9 @@ public class ClienteService {
 	
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	private S3Services s3Services;
 	
 	/*public Cliente find(Integer id) {
 		Optional<Cliente> obj = repo.findById(id);
@@ -111,5 +116,9 @@ public class ClienteService {
 			cli.getTelefones().add(objDTO.getTelefone3());
 		}
 		return cli;
+	}
+	
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+		return s3Services.uploadFile(multipartFile);
 	}
 }
