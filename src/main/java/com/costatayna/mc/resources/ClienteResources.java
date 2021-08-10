@@ -23,6 +23,8 @@ import com.costatayna.mc.domain.Cliente;
 import com.costatayna.mc.dto.ClienteDTO;
 import com.costatayna.mc.dto.NewClienteDto;
 import com.costatayna.mc.services.ClienteService;
+import com.costatayna.mc.services.UserService;
+import com.costatayna.mc.services.exceptions.AuthorizationException;
 
 @RestController
 @RequestMapping(value = "clientes")
@@ -34,6 +36,12 @@ public class ClienteResources {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> find(@PathVariable Integer id) {
 		Cliente obj = service.find(id);
+		return ResponseEntity.ok().body(obj);
+	}
+	
+	@RequestMapping(value="/email", method=RequestMethod.GET)
+	public ResponseEntity<Cliente> find(@RequestParam(value="value") String email) {
+		Cliente obj = service.findByEmail(email);
 		return ResponseEntity.ok().body(obj);
 	}
 
