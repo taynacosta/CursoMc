@@ -58,6 +58,7 @@ private AuthenticationManager authenticationManager;
 		String username = ((UserSS) auth.getPrincipal()).getUsername();
         String token = jwtUtil.generateToken(username);
         res.addHeader("Authorization" , token);
+        res.addHeader("acess-control-exponse-headers", "Authorization");
 	}
 	
 	private class JWTAuthenticationFailureHandler implements AuthenticationFailureHandler {
