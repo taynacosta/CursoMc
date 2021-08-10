@@ -1,5 +1,6 @@
 package com.costatayna.mc.services;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,13 +46,18 @@ public class ClienteService {
 	@Autowired
 	private S3Services s3Services;
 	
+	@Autowired
+	private ImagemService imagemService;
+	
+	@Value("${img.prefix.client.profile}")
+	private String prefix;
+	
 	public Cliente find(Integer id) {
 		
 		UserSS user = UserService.authenticated();
 		if(user == null || !user.hasHole(Perfil.ADMIN) && !id.equals(user.getId())) {
 			throw new AuthorizationException("Acesso negado");
 		}
-		
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElse(null);
 	}
@@ -119,11 +126,10 @@ public class ClienteService {
 			throw new AuthorizationException("Acesso negado");
 		}
 		
-		URI uri = s3Services.uploadFile(multipartFile);
-		Cliente cli = find(user.getId());;
-		cli.setImageUrl(uri.toString());
-		repo.save(cli);
-		return uri;
+		BufferedImage jpgImage = imagemService.getJpgImageFromFile(multipartFile);
+		String fileName = prefix + user.getId() + ".jpg";
+		return s3Services.uploadFile(imagemService.getInputStream(jpgImage, "jpg"), fileName, "image");
+		
 	}
 	
 }

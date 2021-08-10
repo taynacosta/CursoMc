@@ -41,8 +41,6 @@ public class Cliente implements Serializable {
 	@OneToMany(mappedBy= "cliente", cascade=CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
 	
-	private String imageUrl;
-	
 	@ElementCollection @CollectionTable(name= "TELEFONE")
 	private Set<String> telefones = new HashSet<>();
 	
@@ -147,14 +145,7 @@ public class Cliente implements Serializable {
 	public void addPerfil(Perfil perfil) {
 		perfis.add(perfil.getCod());
 	}
-	
-	public String getImageUrl() {
-		return imageUrl;
-	}
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
